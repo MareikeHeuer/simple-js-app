@@ -59,3 +59,19 @@ var pokemonList = [
     abilities: ['chlorophyll']
   }
 ]
+
+//var myFavoritePokemon = pokemonList[7];
+for (var i = 0; i < pokemonList.length; i++) {
+  var pokemon = pokemonList[i];
+//display pokemon names and height in each line with <div> element
+  document.write(
+    "<div class='pokemon'><div class='pokemon-name'>" + pokemon.name +
+    "</div><div class='pokemon-height'>(height: " + pokemon.heightInMeters +
+    ")</div>"
+  );
+  //dispaly "wow, that's big" next to all pokemons whose height is bigger than 1 meter
+  if (pokemon.heightInMeters > 1.0) {
+    document.write("<div>Wow, that's big</div>");
+  }
+  document.write("</div>");
+}
