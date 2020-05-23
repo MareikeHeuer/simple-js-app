@@ -61,9 +61,12 @@ var pokemonList = [
 ]
 
 //var myFavoritePokemon = pokemonList[7];
-for (var i = 0; i < pokemonList.length; i++) {
-  var pokemon = pokemonList[i];
-//display pokemon names and height in each line with <div> element
+/*for (var i = 0; i < pokemonList.length; i++) {
+  var pokemon = pokemonList[i];*/
+
+
+function pokemonAttributesList(pokemon) {
+  //display pokemon names and height in each line with <div> element
   document.write(
     "<div class='pokemon'><div class='pokemon-name'>" + pokemon.name +
     "</div><div class='pokemon-height'>(height: " + pokemon.heightInMeters +
@@ -75,3 +78,4 @@ for (var i = 0; i < pokemonList.length; i++) {
   }
   document.write("</div>");
 }
+pokemonList.forEach(pokemonAttributesList);
