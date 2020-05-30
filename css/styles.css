@@ -16,3 +16,23 @@
 .pokemon-height {
   padding-left: 11px;
 }
+
+.pokemon-button {
+  padding: 6px;
+  margin: 5px;
+  width: 90px;
+  background-color: #ffcb05;
+}
+
+ul {
+  list-style: none;
+}
+
+.pokemon-header {
+  border: 1px solid;
+  padding: 4px;
+  width: 67px;
+  margin-left: 50px;
+  background-color: #3466af;
+  color: white;
+}

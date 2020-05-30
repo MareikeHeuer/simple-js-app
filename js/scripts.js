@@ -51,20 +51,44 @@ var pokemonRepository = (function() {
     }
   ];
 
-//Function to add Pokemon to the Pokemon list
+  //Create a function inside IIFE
+  function addListItem(pokemon) {
+    //new variable
+    var pokemonList = document.querySelector('.pokemon-list');
+    //create li element
+    var listItem = document.createElement('li');
+    //create a button createElement
+    var button = document.createElement('button');
+    button.innerText = pokemon.name;
+    button.classList.add('pokemon-button')
+    button.addEventListener('click', function() {
+      showDetails(pokemon)
+    })
+    // Add to parents
+    listItem.appendChild(button);
+    pokemonList.appendChild(listItem);
+  }
+
+// Function to show details
+function showDetails(pokemon) {
+  console.log(pokemon);
+}
+
+  //Function to add Pokemon to the Pokemon list
   function add(pokemon) {
     pokemonList.push(pokemon);
   }
 
-//Function to get all the Pokemons
+  //Function to get all the Pokemons
   function getAll() {
     return pokemonList;
   }
 
-//Return functions to add and get all the Pokemons
+  //Return functions to add and get all the Pokemons
   return {
     add: add,
-    getAll: getAll
+    getAll: getAll,
+    addListItem: addListItem,
   };
 })();
 
@@ -73,18 +97,6 @@ pokemonRepository.add({
   heightInMeters: 0.4,
 })
 
-
-function pokemonAttributesList(pokemon) {
-  //display pokemon names and height in each line with <div> element
-  document.write(
-    "<div class='pokemon'><div class='pokemon-name'>" + pokemon.name +
-    "</div><div class='pokemon-height'>(height: " + pokemon.heightInMeters +
-    ")</div>"
-  );
-  //dispaly "wow, that's big" next to all pokemons whose height is bigger than 1 meter
-  if (pokemon.heightInMeters > 1.0) {
-    document.write("<div>Wow, that's big</div>");
-  }
-  document.write("</div>");
-}
-pokemonRepository.getAll().forEach(pokemonAttributesList);
+pokemonRepository.getAll().forEach(function (pokemon) {
+  pokemonRepository.addListItem(pokemon)
+});
