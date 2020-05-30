@@ -1,55 +1,8 @@
 //pokemonList array wrapped inside an IIFE
-var pokemonRepository = (function() {
-  var pokemonList = [{
-      name: 'Spheal',
-      heightInMeters: 0.8,
-      weightInKg: 39.5,
-      abilities: ['oblivious', 'thick-fat', 'ice-body']
-    },
-    {
-      name: 'Togekiss',
-      heightInMeters: 1.5,
-      weightInKg: 38,
-      abilities: ['serene-grace', 'hustle', 'super-luck']
-    },
-    {
-      name: 'Happiny',
-      heightInMeters: 0.6,
-      weightInKg: 24.4,
-      abilities: ['natural-cure', 'serene-grace', 'friend-guard']
-    },
-    {
-      name: 'Teddiursa',
-      heightInMeters: 0.6,
-      weightInKg: 8.8,
-      abilities: ['pickup', 'quick-feet', 'honey-gather']
-    },
-    {
-      name: 'Pikachu',
-      heightInMeters: 0.4,
-      weightInKg: 6,
-      abilities: ['static', 'lightningrod']
-    },
+var pokemonRepository = (function () {
+  var pokemonList = [];
+  var apiUrl = 'https://pokeapi.co/api/v2/pokemon/?limit=150';
 
-    {
-      name: 'Jigglypuff',
-      heightInMeters: 0.5,
-      weightInKg: 5.5,
-      abilities: ['cute-charm', 'friend-guard']
-    },
-    {
-      name: 'Minun',
-      heightInMeters: 0.4,
-      weightInKg: 4.2,
-      abilities: ['minus']
-    },
-    {
-      name: 'Cherubi',
-      heightInMeters: 0.4,
-      weightInKg: 3.3,
-      abilities: ['chlorophyll']
-    }
-  ];
 
   //Create a function inside IIFE
   function addListItem(pokemon) {
@@ -70,8 +23,10 @@ var pokemonRepository = (function() {
   }
 
 // Function to show details
-function showDetails(pokemon) {
-  console.log(pokemon);
+function showDetails(item) {
+  loadDetails(item).then(function () {
+    console.log(item);
+  });
 }
 
   //Function to add Pokemon to the Pokemon list
@@ -79,24 +34,56 @@ function showDetails(pokemon) {
     pokemonList.push(pokemon);
   }
 
+  function loadList() {
+    return fetch(apiUrl).then(function (response) {
+      return response.json();
+    }).then(function (json) {
+      json.results.forEach(function (item) {
+        var pokemon = {
+          name: item.name,
+          detailsUrl: item.url
+        };
+        add(pokemon);
+      });
+    }).catch(function (e) {
+      console.error(e);
+    })
+  }
+
   //Function to get all the Pokemons
   function getAll() {
     return pokemonList;
   }
+
+  function loadDetails(item) {
+  var url = item.detailsUrl;
+  return fetch(url).then(function (response) {
+    return response.json();
+  }).then(function (details) {
+    // Now we add the details to the item
+    item.imageUrl = details.sprites.front_default;
+    item.height = details.height;
+    item.types = details.types;
+  }).catch(function (e) {
+    console.error(e);
+  });
+}
+
+
 
   //Return functions to add and get all the Pokemons
   return {
     add: add,
     getAll: getAll,
     addListItem: addListItem,
+    loadList: loadList,
+    loadDetails: loadDetails,
   };
 })();
 
-pokemonRepository.add({
-  name: 'Pikachu',
-  heightInMeters: 0.4,
-})
-
-pokemonRepository.getAll().forEach(function (pokemon) {
-  pokemonRepository.addListItem(pokemon)
+pokemonRepository.loadList().then(function() {
+  // Now the data is loaded!
+  pokemonRepository.getAll().forEach(function(pokemon){
+    pokemonRepository.addListItem(pokemon);
+  });
 });
