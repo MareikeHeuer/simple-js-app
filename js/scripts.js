@@ -1,4 +1,103 @@
 //pokemonList array wrapped inside an IIFE
+function showModal(title, text) {
+  var modalContainer = document.querySelector("#modal-container");
+
+  // Clear all existing modal content
+  modalContainer.innerHTML = "";
+
+  var modal = document.createElement("div");
+  modal.classList.add("modal");
+
+  // Add the new modal content
+  var closeButtonElement = document.createElement("button");
+  closeButtonElement.classList.add("modal-close");
+  closeButtonElement.innerText = "Close";
+
+  var titleElement = document.createElement("h1");
+  titleElement.innerText = title;
+
+  var contentElement = document.createElement("p");
+  contentElement.innerText = text;
+
+  modal.appendChild(closeButtonElement);
+  modal.appendChild(titleElement);
+  modal.appendChild(contentElement);
+  modalContainer.appendChild(modal);
+
+  modalContainer.classList.add("is-visible");
+
+  var closeButtonElement = document.createElement("button");
+  closeButtonElement.classList.add("modal-close");
+  closeButtonElement.innerText = "Close";
+  closeButtonElement.addEventListener("click", hideModal);
+
+  window.addEventListener("keydown", (e) => {
+    var modalContainer = document.querySelector("#modal-container");
+    if (e.key === "Escape" && modalContainer.classList.contains("is-visible")) {
+      hideModal();
+    }
+  });
+
+  modalContainer.addEventListener("click", (e) => {
+    // Since this is also triggered when clicking INSIDE the modal
+    // We only want to close if the user clicks directly on the overlay
+    var target = e.target;
+    if (target === modalContainer) {
+      hideModal();
+    }
+  });
+}
+
+
+var modalContainer = document.querySelector("#modal-container");
+
+var dialogPromiseReject;
+
+function hideModal() {
+  modalContainer.classList.remove("is-visible");
+  if (dialogPromiseReject) {
+    dialogPromiseReject();
+    dialogPromiseReject = null;
+  }
+}
+
+function showDialog(title, text) {
+  showModal(title, text);
+
+  // We want to add a confirm and cancel button to the modal
+  var modal = modalContainer.querySelector(".modal");
+
+  var confirmButton = document.createElement("button");
+  confirmButton.classList.add("modal-confirm");
+  confirmButton.innerText = "Confirm";
+
+  var cancelButton = document.createElement("button");
+  cancelButton.classList.add("modal-cancel");
+  cancelButton.innerText = "Cancel";
+
+  modal.appendChild(confirmButton);
+  modal.appendChild(cancelButton);
+
+  // We want to focus the confirmButton so that the user can simply press Enter
+  confirmButton.focus();
+
+  // Return a promise that resolves when confirmed, else rejects
+  return new Promise((resolve, reject) => {
+    cancelButton.addEventListener("click", hideModal);
+    confirmButton.addEventListener("click", () => {
+      dialogPromiseReject = null; // Reset this
+      hideModal();
+      resolve();
+    });
+
+    // This can be used to reject from other functions
+    dialogPromiseReject = reject;
+  });
+}
+
+
+
+
 var pokemonRepository = (function () {
   var pokemonList = [];
   var apiUrl = 'https://pokeapi.co/api/v2/pokemon/?limit=150';
@@ -23,9 +122,13 @@ var pokemonRepository = (function () {
   }
 
 // Function to show details
-function showDetails(item) {
-  loadDetails(item).then(function () {
-    console.log(item);
+function showDetails(pokemon) {
+  loadDetails(pokemon).then(function () {
+    showModal(pokemon.name, 'Height: ' + pokemon.height);
+    var modal = modalContainer.querySelector(".modal");
+    var imageTag = document.createElement("img");
+    imageTag.src = pokemon.imageUrl;
+    modal.appendChild(imageTag)
   });
 }
 
