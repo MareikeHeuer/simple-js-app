@@ -9,9 +9,14 @@ function showModal(title, text) {
   modal.classList.add("modal");
 
   // Add the new modal content
+  /*  var closeButtonElement = document.createElement("button");
+    closeButtonElement.classList.add("modal-close");
+    closeButtonElement.innerText = "Close";*/
+
   var closeButtonElement = document.createElement("button");
   closeButtonElement.classList.add("modal-close");
   closeButtonElement.innerText = "Close";
+  closeButtonElement.addEventListener("click", hideModal);
 
   var titleElement = document.createElement("h1");
   titleElement.innerText = title;
@@ -25,11 +30,6 @@ function showModal(title, text) {
   modalContainer.appendChild(modal);
 
   modalContainer.classList.add("is-visible");
-
-  var closeButtonElement = document.createElement("button");
-  closeButtonElement.classList.add("modal-close");
-  closeButtonElement.innerText = "Close";
-  closeButtonElement.addEventListener("click", hideModal);
 
   window.addEventListener("keydown", (e) => {
     var modalContainer = document.querySelector("#modal-container");
@@ -61,59 +61,22 @@ function hideModal() {
   }
 }
 
-function showDialog(title, text) {
-  showModal(title, text);
-
-  // We want to add a confirm and cancel button to the modal
-  var modal = modalContainer.querySelector(".modal");
-
-  var confirmButton = document.createElement("button");
-  confirmButton.classList.add("modal-confirm");
-  confirmButton.innerText = "Confirm";
-
-  var cancelButton = document.createElement("button");
-  cancelButton.classList.add("modal-cancel");
-  cancelButton.innerText = "Cancel";
-
-  modal.appendChild(confirmButton);
-  modal.appendChild(cancelButton);
-
-  // We want to focus the confirmButton so that the user can simply press Enter
-  confirmButton.focus();
-
-  // Return a promise that resolves when confirmed, else rejects
-  return new Promise((resolve, reject) => {
-    cancelButton.addEventListener("click", hideModal);
-    confirmButton.addEventListener("click", () => {
-      dialogPromiseReject = null; // Reset this
-      hideModal();
-      resolve();
-    });
-
-    // This can be used to reject from other functions
-    dialogPromiseReject = reject;
-  });
-}
-
-
-
-
-var pokemonRepository = (function () {
+var pokemonRepository = (function() {
   var pokemonList = [];
-  var apiUrl = 'https://pokeapi.co/api/v2/pokemon/?limit=150';
+  var apiUrl = "https://pokeapi.co/api/v2/pokemon/?limit=150";
 
 
   //Create a function inside IIFE
   function addListItem(pokemon) {
     //new variable
-    var pokemonList = document.querySelector('.pokemon-list');
+    var pokemonList = document.querySelector(".pokemon-list");
     //create li element
-    var listItem = document.createElement('li');
+    var listItem = document.createElement("li");
     //create a button createElement
-    var button = document.createElement('button');
+    var button = document.createElement("button");
     button.innerText = pokemon.name;
-    button.classList.add('pokemon-button')
-    button.addEventListener('click', function() {
+    button.classList.add("pokemon-button")
+    button.addEventListener("click", function() {
       showDetails(pokemon)
     })
     // Add to parents
@@ -121,16 +84,16 @@ var pokemonRepository = (function () {
     pokemonList.appendChild(listItem);
   }
 
-// Function to show details
-function showDetails(pokemon) {
-  loadDetails(pokemon).then(function () {
-    showModal(pokemon.name, 'Height: ' + pokemon.height);
-    var modal = modalContainer.querySelector(".modal");
-    var imageTag = document.createElement("img");
-    imageTag.src = pokemon.imageUrl;
-    modal.appendChild(imageTag)
-  });
-}
+  // Function to show details
+  function showDetails(pokemon) {
+    loadDetails(pokemon).then(function() {
+      showModal(pokemon.name, "Height: " + pokemon.height);
+      var modal = modalContainer.querySelector(".modal");
+      var imageTag = document.createElement("img");
+      imageTag.src = pokemon.imageUrl;
+      modal.appendChild(imageTag)
+    });
+  }
 
   //Function to add Pokemon to the Pokemon list
   function add(pokemon) {
@@ -138,17 +101,17 @@ function showDetails(pokemon) {
   }
 
   function loadList() {
-    return fetch(apiUrl).then(function (response) {
+    return fetch(apiUrl).then(function(response) {
       return response.json();
-    }).then(function (json) {
-      json.results.forEach(function (item) {
+    }).then(function(json) {
+      json.results.forEach(function(item) {
         var pokemon = {
           name: item.name,
           detailsUrl: item.url
         };
         add(pokemon);
       });
-    }).catch(function (e) {
+    }).catch(function(e) {
       console.error(e);
     })
   }
@@ -159,18 +122,18 @@ function showDetails(pokemon) {
   }
 
   function loadDetails(item) {
-  var url = item.detailsUrl;
-  return fetch(url).then(function (response) {
-    return response.json();
-  }).then(function (details) {
-    // Now we add the details to the item
-    item.imageUrl = details.sprites.front_default;
-    item.height = details.height;
-    item.types = details.types;
-  }).catch(function (e) {
-    console.error(e);
-  });
-}
+    var url = item.detailsUrl;
+    return fetch(url).then(function(response) {
+      return response.json();
+    }).then(function(details) {
+      // Now we add the details to the item
+      item.imageUrl = details.sprites.front_default;
+      item.height = details.height;
+      item.types = details.types;
+    }).catch(function(e) {
+      console.error(e);
+    });
+  }
 
 
 
@@ -186,7 +149,7 @@ function showDetails(pokemon) {
 
 pokemonRepository.loadList().then(function() {
   // Now the data is loaded!
-  pokemonRepository.getAll().forEach(function(pokemon){
+  pokemonRepository.getAll().forEach(function(pokemon) {
     pokemonRepository.addListItem(pokemon);
   });
 });

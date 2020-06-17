@@ -22,19 +22,14 @@
   margin: 5px;
   width: 90px;
   background-color: #ffcb05;
+  border-radius: 50px;
+  border: solid #3466af 2px;
+  text-transform: capitalize;
+  font-weight: bold;
 }
 
 ul {
   list-style: none;
-}
-
-.pokemon-header {
-  border: 1px solid;
-  padding: 4px;
-  width: 67px;
-  margin-left: 50px;
-  background-color: #3466af;
-  color: white;
 }
 
 #modal-container {
@@ -89,4 +84,25 @@ ul {
 
 .modal p {
   margin-bottom: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pokemon-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  column-gap: 60px;
+  row-gap: 1em;
+  margin-left: -25px;
+}
+
+.pikachu-title-image {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 40%;
 }
